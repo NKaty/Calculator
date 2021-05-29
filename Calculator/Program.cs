@@ -2,9 +2,14 @@
 
 namespace Calculator
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
+        {
+            RunCalculator(new ConsoleWrapper());
+        }
+
+        public static void RunCalculator(IConsoleWrapper consoleWrapper)
         {
             bool endApp = false;
             // Display title as the C# console calculator app.
@@ -20,24 +25,24 @@ namespace Calculator
 
                 // Ask the user to type the first number.
                 Console.Write("Type a number, and then press Enter: ");
-                numInput1 = Console.ReadLine();
+                numInput1 = consoleWrapper.Readline();
 
                 double cleanNum1 = 0;
                 while (!double.TryParse(numInput1, out cleanNum1))
                 {
                     Console.Write("This is not valid input. Please enter an integer value: ");
-                    numInput1 = Console.ReadLine();
+                    numInput1 = consoleWrapper.Readline();
                 }
 
                 // Ask the user to type the second number.
                 Console.Write("Type another number, and then press Enter: ");
-                numInput2 = Console.ReadLine();
+                numInput2 = consoleWrapper.Readline();
 
                 double cleanNum2 = 0;
                 while (!double.TryParse(numInput2, out cleanNum2))
                 {
                     Console.Write("This is not valid input. Please enter an integer value: ");
-                    numInput2 = Console.ReadLine();
+                    numInput2 = consoleWrapper.Readline();
                 }
 
                 // Ask the user to choose an operator.
@@ -48,7 +53,7 @@ namespace Calculator
                 Console.WriteLine("\td - Divide");
                 Console.Write("Your option? ");
 
-                string op = Console.ReadLine();
+                string op = consoleWrapper.Readline();
 
                 try
                 {
@@ -68,7 +73,7 @@ namespace Calculator
 
                 // Wait for the user to respond before closing.
                 Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
-                if (Console.ReadLine() == "n") endApp = true;
+                if (consoleWrapper.Readline() == "n") endApp = true;
 
                 Console.WriteLine("\n"); // Friendly linespacing.
             }
