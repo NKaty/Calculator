@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Xunit;
 
@@ -23,16 +24,50 @@ namespace Calculator.Test
         [Fact]
         public void ShouldMultiplyFiveAndTwo()
         {
-            Program.RunCalculator(new MockConsoleWrapper());
+            MockConsoleWrapper mockConsoleWrpper = new MockConsoleWrapper();
+            Program.RunCalculator(mockConsoleWrpper);
+            Assert.Equal("Your result: 10", mockConsoleWrpper.OutputList[10].Trim());
         }
     }
 
-public class MockConsoleWrapper : IConsoleWrapper
+    public class MockConsoleWrapper : IConsoleWrapper
     {
-        Queue<string> input = new Queue<string>(new[] {"5", "2", "m", "n"});
+        Queue<string> inputQueue = new Queue<string>(new[] {"5", "2", "m", "n"});
+        public List<string> OutputList { get; set; } = new List<string>();
         public string Readline()
         {
-            return input.Dequeue();
+            return inputQueue.Dequeue();
+        }
+
+        public void Write(string output)
+        {
+            using (StringWriter stringWriter = new StringWriter())
+            {
+                Console.SetOut(stringWriter);
+                Console.Write(output);
+                OutputList.Add(stringWriter.ToString());
+            }
+        }
+
+        public void WriteLine(string output)
+        {
+            using (StringWriter stringWriter = new StringWriter())
+            {
+                Console.SetOut(stringWriter);
+                Console.WriteLine(output);
+                OutputList.Add(stringWriter.ToString());
+            }
+        }
+
+        public void WriteLine(string output1, object output2)
+        {
+            using (StringWriter stringWriter = new StringWriter())
+            {
+                Console.SetOut(stringWriter);
+                Console.WriteLine(output1, output2);
+                
+                OutputList.Add(stringWriter.ToString());
+            }
         }
     }
 }
