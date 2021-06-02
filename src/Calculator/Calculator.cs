@@ -31,6 +31,7 @@ namespace Calculator
                     break;
                 // Return text for an incorrect option entry.
                 default:
+                    throw new InvalidOperationException("Invalid operation.");
                     break;
             }
             return result;

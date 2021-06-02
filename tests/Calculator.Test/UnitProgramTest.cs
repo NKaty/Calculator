@@ -11,7 +11,7 @@ namespace Calculator.Test
         [Fact]
         public void ShouldReceiveUserInput()
         {
-            IConsoleWrapper consoleWrapper = new MockConsoleWrapper();
+            IConsoleWrapper consoleWrapper = new MockConsoleWrapper() { InputQueue = new Queue<string>(new[] { "5", "2", "m", "n" }) };
             string userInput1 = consoleWrapper.Readline();
             Assert.Equal("5", userInput1);
             string userInput2 = consoleWrapper.Readline();
@@ -24,19 +24,31 @@ namespace Calculator.Test
         [Fact]
         public void ShouldMultiplyFiveAndTwo()
         {
-            MockConsoleWrapper mockConsoleWrpper = new MockConsoleWrapper();
+            MockConsoleWrapper mockConsoleWrpper = new MockConsoleWrapper() { InputQueue = new Queue<string>(new [] { "5", "2", "m", "n" })};
             Program.RunCalculator(mockConsoleWrpper);
             Assert.Equal("Your result: 10", mockConsoleWrpper.OutputList[10].Trim());
+        }
+
+        [Theory]
+        [InlineData(new[] { "a", "5", "2", "m", "n" }, "Your result: 10", 11)]
+        [InlineData(new[] { "5", "a", "2", "m", "n" }, "Your result: 10", 11)]
+        [InlineData(new[] { "5", "0", "d", "n" }, "This operation will result in a mathematical error.", 10)]
+        [InlineData(new[] { "5", "2", "k", "n" }, "Oh no! An exception occurred trying to do the math.\n - Details: Invalid operation.", 10)]
+        public void ShouldGiveAppropriateMessage(string [] args, string message, int index)
+        {
+            MockConsoleWrapper mockConsoleWrpper = new MockConsoleWrapper() { InputQueue = new Queue<string>(args) };
+            Program.RunCalculator(mockConsoleWrpper);
+            Assert.Equal(message, mockConsoleWrpper.OutputList[index].Trim());
         }
     }
 
     public class MockConsoleWrapper : IConsoleWrapper
     {
-        Queue<string> inputQueue = new Queue<string>(new[] {"5", "2", "m", "n"});
+        public Queue<string> InputQueue { get; set; } = new Queue<string>();
         public List<string> OutputList { get; set; } = new List<string>();
         public string Readline()
         {
-            return inputQueue.Dequeue();
+            return InputQueue.Dequeue();
         }
 
         public void Write(string output)

@@ -31,9 +31,9 @@ namespace Calculator.Test
             Assert.Equal(double.NaN, Calculator.DoOperation(100, 0, "d"));
         }
         [Fact]
-        public void ShouldNotDoUnknownOperation()
+        public void ShouldThrowInvalidOperationException()
         {
-            Assert.Equal(double.NaN, Calculator.DoOperation(100, 10, "k"));
+            Assert.Throws<InvalidOperationException>(() => Calculator.DoOperation(100, 10, "k"));
         }
     }
 }
